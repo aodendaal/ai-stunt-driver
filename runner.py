@@ -71,7 +71,7 @@ def get_direction(one_hot):
         print('down+right')
         return [Key.down, Key.right]
     else:
-        print('nothing {0}|{1}'.format(found, one_hot))
+        print('nothing')
         return ''
 
 
