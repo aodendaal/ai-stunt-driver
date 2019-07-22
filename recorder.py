@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
 from pynput import keyboard
 from pynput.keyboard import Key
 from PIL import ImageGrab, Image

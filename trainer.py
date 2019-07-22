@@ -1,5 +1,6 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
 import tensorflow as tf
-import cnn_model
+import cnn_model_lazy as m
 import training_data
 import numpy as np
 
@@ -7,7 +8,7 @@ with tf.Session() as session:
     x = tf.placeholder(tf.float32, shape=[None, training_data.width * training_data.height])
     y = tf.placeholder(tf.float32, shape=[None, training_data.channels])
 
-    model = cnn_model.Model(training_data.width, training_data.height, training_data.channels, x, 0.9, y)
+    model = m.Model(training_data.width, training_data.height, training_data.channels, x, 0.9, y)
 
     init = tf.global_variables_initializer()
     session.run(init)
