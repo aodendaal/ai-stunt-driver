@@ -30,7 +30,7 @@ with tf.Session() as session:
             break
 
     print('Testing accuracy')
-    test_data, test_labels = training_data.get_test_data_and_labels()
+    test_data, test_labels = training_data.get_test_batch()
 
     result = session.run(model.error, feed_dict={x: test_data, y: test_labels})
     print('Accuracy: {0}%'.format(int(result * 100)))
