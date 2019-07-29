@@ -37,7 +37,7 @@ def get_batch(count):
     return training_data, labels
 
 
-def get_test_data_and_labels():
+def get_test_batch():
     global test_filename
 
     df = pd.read_csv(test_filename)
