@@ -6,8 +6,24 @@ data_filename = 'data/recording.csv'
 image_path = './screenshots/'
 
 
-def get_image_data(filename):
-    img = Image.open(filename)
+def get_record_count():
+    df = pd.read_csv(data_filename, header=None)
+    return df[0].count()
+
+
+def get_record(index):
+    df = pd.read_csv(data_filename, header=None)
+
+    filename = df.iloc[index, 0]
+
+    image = get_image_data(image_path + filename)
+    label = df.iloc[index, 1]
+
+    return image, label
+
+
+def get_image_data(fullfilename):
+    img = Image.open(fullfilename)
     arr = np.array(img)
     return arr
 

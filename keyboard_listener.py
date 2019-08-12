@@ -1,10 +1,11 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from pynput import keyboard
-from pynput.keyboard import Key
+from pynput.keyboard import Key, Controller
 
 is_running = True
 is_recording = False
 current_keys = set()
+pressed_keys = set()
 
 
 def on_press(key):
@@ -32,6 +33,17 @@ def setup_keyboard_listening():
     listen = keyboard.Listener(on_press=on_press, on_release=on_release)
 
     listen.start()
+
+
+def press_keys(keys):
+    keyboard = Controller()
+
+    for key in pressed_keys:
+        keyboard.release(key)
+
+    for key in keys:
+        pressed_keys.add(key)
+        keyboard.press(key)
 
 
 def get_current_keys():
