@@ -33,8 +33,8 @@ def start_recorder():
     print('App Started')
     with open(output_filename, 'a', newline='\n') as recording_file:
         writer = csv.writer(recording_file)
-        while listener.is_running:
-            while listener.is_recording:
+        while listener.has_started:
+            while listener.is_listening:
                 filename = screenshot.save_screenshot(image_path)
                 writer.writerow([filename, direction_to_onehot(listener.get_current_keys())])
 

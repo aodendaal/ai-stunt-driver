@@ -27,48 +27,26 @@ def get_prediction(data):
     return prediction
 
 
-def get_keys_to_press(one_hot):
-    found = np.argmax(one_hot)
-    if (found == 0):
-        print('up+left')
-        return [Key.up, Key.left]
-    elif (found == 1):
-        print('up')
-        return [Key.up]
-    elif (found == 2):
-        print('up+right')
-        return [Key.up, Key.right]
-    elif (found == 3):
-        print('left')
-        return [Key.left]
-    elif (found == 4):
-        print('right')
-        return [Key.right]
-    elif (found == 5):
-        print('down+left')
-        return [Key.down, Key.left]
-    elif (found == 6):
-        print('down')
-        return [Key.down]
-    elif (found == 7):
-        print('down+right')
-        return [Key.down, Key.right]
-    else:
-        print('nothing')
-        return ''
-
-
 def main():
+    get_model()
+
     kb.setup_keyboard_listening()
 
-    while kb.is_running:
-        if (kb.is_running):
+    count = 0
+    while kb.has_started:
+        if (kb.is_listening):
             data = st.get_screenshot_array()
             prediction = get_prediction(data)
-            keys = get_keys_to_press(prediction)
-            kb.press_keys(keys)
+            key, key_desc = kb.get_keys_to_press(prediction)
+            print(count, key_desc)
+            count = count + 1
+            kb.press_keys(key)
+        else:
+            kb.clear_pressed_keys()
 
         time.sleep(1 / frames_per_second)
+
+    kb.clear_pressed_keys()
 
 
 if __name__ == "__main__":
