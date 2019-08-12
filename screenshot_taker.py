@@ -14,9 +14,10 @@ def save_screenshot(path):
                       math.floor(img.height * resize_percentage)),
                      Image.BILINEAR)
 
-    filename = "{0}/{1}.png".format(path, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"))
+    filename = "{0}.png".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"))
+    pahtfilename = "{0}/{1}".format(path, filename)
 
-    img.save(filename, "PNG")
+    img.save(pahtfilename, "PNG")
 
     return filename
 
@@ -33,4 +34,9 @@ def get_screenshot_data():
     return pixels
 
 
-print(save_screenshot("./img"))
+def main():
+    print(save_screenshot("./img"))
+
+
+if __name__ == "__main__":
+    main()

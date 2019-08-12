@@ -8,6 +8,9 @@ current_keys = set()
 
 
 def on_press(key):
+    global is_running
+    global is_recording
+
     current_keys.add(key)
 
     if key == Key.f10:

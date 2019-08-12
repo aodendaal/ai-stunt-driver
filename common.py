@@ -1,22 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import functools
-from PIL import ImageGrab, Image
-import math
 import tensorflow as tf
-
-resize_percentage = 0.2
-
-
-def get_screenshot_data():
-    img = ImageGrab.grab()  # grab full screen
-    img = img.convert("L")  # convert to greyscale
-    img = img.resize((math.floor(img.width * resize_percentage),
-                      math.floor(img.height * resize_percentage)),
-                     Image.BILINEAR)
-
-    pixels = img.getdata()
-
-    return list(pixels)
 
 
 def define_scope(function):
