@@ -6,7 +6,7 @@ import screenshot_taker as screenshot
 
 image_path = "./screenshots"
 output_filename = './data/recording.csv'
-frames_per_second = 5
+frames_per_second = 10
 
 
 def direction_to_onehot(input):
@@ -31,7 +31,6 @@ def direction_to_onehot(input):
 
 
 def start_recorder():
-    print('App Started')
     with open(output_filename, 'a', newline='\n') as recording_file:
         writer = csv.writer(recording_file)
         while listener.has_started:

@@ -62,9 +62,6 @@ def load_data():
 def load_test_data():
     df = pd.read_csv(test_data_filename, header=None)
 
-    image_data = np.empty([0, 80, 128])
-    label_data = np.empty([0, 1])
-
     for _, row in df.iterrows():
         arr = get_image_data(image_path + row[0])
         image_data = np.append(image_data, [arr], axis=0)
@@ -73,16 +70,40 @@ def load_test_data():
     return image_data, label_data
 
 
+def compile_data():
+    df = pd.read_csv(data_filename, header=None)
+
+    image_data = np.empty([0, 80, 128])
+    label_data = np.empty([0, 1])
+
+    count = 0
+    total = get_record_count()
+
+    for _, row in df.iterrows():
+        print("Loading record {0} of {1}".format(count, total))
+        arr = get_image_data(image_path + row[0])
+        image_data = np.append(image_data, [arr], axis=0)
+        label_data = np.append(label_data, [[row[1]]], axis=0)
+        count = count + 1
+
+    print("Saving image data")
+    np.save('./data/image_data.npy', image_data)
+
+    print("Saving label data")
+    np.save('./data/label_data.npy', label_data)
+
+
 def main():
-    image_data, label_data = load_data()
+    # image_data, label_data = load_data()
 
-    print(image_data.shape)
-    print(label_data.shape)
+    # print(image_data.shape)
+    # print(label_data.shape)
 
-    test_image_data, test_label_data = load_test_data()
+    # test_image_data, test_label_data = load_test_data()
 
-    print(test_image_data.shape)
-    print(test_label_data.shape)
+    # print(test_image_data.shape)
+    # print(test_label_data.shape)
+    compile_data()
 
 
 if __name__ == "__main__":
