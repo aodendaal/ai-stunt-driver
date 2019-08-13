@@ -1,141 +1,53 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-from pynput import keyboard
-from pynput.keyboard import Key, Controller
-from PIL import ImageGrab, Image
-import tensorflow as tf
+import keyboard_listener as kb
 import numpy as np
+from pynput.keyboard import Key
+import screenshot_taker as st
+from tensorflow.keras import datasets, layers, models
 import time
-import math
-import cnn_model
 
-is_running = True
-is_playing = False
 
-tf.reset_default_graph()
-
-input_length = 10240
-ouput_length = 9
-
+model = None
 frames_per_second = 5
-resize_percentage = 0.2
-
-current_keys = set()
-
-width = int(640 * 0.2)
-height = int(400 * 0.2)
-channels = 9
-
-x = tf.placeholder(tf.float32, shape=[None, width * height])
-y = tf.placeholder(tf.float32, shape=[None, channels])
-model = cnn_model.Model(width, height, channels, x, 1.0, y)
 
 
-def load_model(session):
-    print("Loading model...")
+def get_model():
+    global model
 
-    saver = tf.train.Saver()
-    saver.restore(session, "tmp/cnn.ckpt")
-
-
-def calculate_one_hot(session, data):
-    formatted = list(map(lambda cell: cell / 255, data))
-
-    result = session.run(model.prediction, {x: [formatted]})
-
-    return result[0]
+    model = models.load_model('./tmp/kerasmodel.h5')
 
 
-def get_direction(one_hot):
-    found = np.argmax(one_hot)
-    if (found == 0):
-        print('up+left')
-        return [Key.up, Key.left]
-    elif (found == 1):
-        print('up')
-        return [Key.up]
-    elif (found == 2):
-        print('up+right')
-        return [Key.up, Key.right]
-    elif (found == 3):
-        print('left')
-        return [Key.left]
-    elif (found == 4):
-        print('right')
-        return [Key.right]
-    elif (found == 5):
-        print('down+left')
-        return [Key.down, Key.left]
-    elif (found == 6):
-        print('down')
-        return [Key.down]
-    elif (found == 7):
-        print('down+right')
-        return [Key.down, Key.right]
-    else:
-        print('nothing')
-        return ''
+def get_prediction(data):
+    if model == None:
+        get_model()
+
+    data = data.reshape(1, 80, 128, 1)
+    prediction = model.predict(data)
+
+    return prediction
 
 
-def setup_keyboard_listening():
+def main():
+    get_model()
 
-    def on_press(key):
-        global is_running
-        global is_playing
+    kb.setup_keyboard_listening()
 
-        if key == Key.f10:
-            is_playing = not is_playing
-            if is_playing:
-                print('Playing started...')
-            else:
-                print('Playing stopped.')
-        if key == Key.f12:
-            is_running = False
-            print('App Stopped')
+    count = 0
+    while kb.has_started:
+        if (kb.is_listening):
+            data = st.get_screenshot_array()
+            prediction = get_prediction(data)
+            key, key_desc = kb.get_keys_to_press(prediction)
+            print(count, key_desc)
+            count = count + 1
+            kb.press_keys(key)
+        else:
+            kb.clear_pressed_keys()
 
-    listen = keyboard.Listener(on_press=on_press)
+        time.sleep(1 / frames_per_second)
 
-    listen.start()
-
-
-def get_screenshot_data():
-    img = ImageGrab.grab()  # grab full screen
-    img = img.convert("L")  # convert to greyscale
-    img = img.resize((math.floor(img.width * resize_percentage),
-                      math.floor(img.height * resize_percentage)), Image.BILINEAR)
-
-    pixels = img.getdata()
-
-    return list(pixels)
+    kb.clear_pressed_keys()
 
 
-def press_keys(keys):
-    keyboard = Controller()
-
-    for key in current_keys:
-        keyboard.release(key)
-
-    for key in keys:
-        current_keys.add(key)
-        keyboard.press(key)
-        # print(key)
-
-
-print('Starting...')
-setup_keyboard_listening()
-
-with tf.Session() as session:
-    load_model(session)
-    while is_running:
-        while is_playing:
-            data = get_screenshot_data()
-            one_hot = calculate_one_hot(session, data)
-            direction_keys = get_direction(one_hot)
-
-            press_keys(direction_keys)
-
-            time.sleep(1 / frames_per_second)
-        press_keys([])  # clear any pressed keys
-
-    press_keys([])  # clear any pressed keys
-
-print("Complete.")
+if __name__ == "__main__":
+    main()

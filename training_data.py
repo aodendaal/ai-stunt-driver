@@ -1,50 +1,89 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-import pandas as pd  # Python Data Analysis Library
+from PIL import Image
 import numpy as np
-import ast  # Abstrast Syntax Trees
+import pandas as pd
 
-resize_percentage = 0.2
-width = int(640 * resize_percentage)
-height = int(400 * resize_percentage)
-channels = 9
-
-skip_count = 0
-recording_filename = "data/recording.csv"
-test_filename = "data/test.csv"
+data_filename = 'data/recording.csv'
+test_data_filename = 'data/test.csv'
+image_path = './screenshots/'
 
 
-def get_file_size():
-    global recording_filename
-
-    with open(recording_filename) as f:
-        size = sum(1 for line in f)
-
-    return size
+def get_record_count():
+    df = pd.read_csv(data_filename, header=None)
+    return df[0].count()
 
 
-def get_batch(count):
-    global skip_count
-    global recording_filename
-
-    df = pd.read_csv(recording_filename, skiprows=skip_count, nrows=count)
-    skip_count = skip_count + count
-    data = df.to_numpy()
-    raw_data = list(map(lambda row: ast.literal_eval(row[0]), data))
-    training_data = list(map(lambda row: list(map(lambda cell: cell / 255, row)), raw_data))
-
-    labels = list(map(lambda row: ast.literal_eval(row[1]), data))
-
-    return training_data, labels
+def get_test_record_count():
+    df = pd.read_csv(test_data_filename, header=None)
+    return df[0].count()
 
 
-def get_test_batch():
-    global test_filename
+def get_record(index):
+    df = pd.read_csv(data_filename, header=None)
 
-    df = pd.read_csv(test_filename)
-    data = df.to_numpy()
-    raw_data = list(map(lambda row: ast.literal_eval(row[0]), data))
-    training_data = list(map(lambda row: list(map(lambda cell: cell / 255, row)), raw_data))
+    filename = df.iloc[index, 0]
 
-    labels = list(map(lambda row: ast.literal_eval(row[1]), data))
+    image = get_image_data(image_path + filename)
+    label = df.iloc[index, 1]
 
-    return training_data, labels
+    return image, label
+
+
+def get_test_record(index):
+    df = pd.read_csv(data_filename, header=None)
+
+    filename = df.iloc[index, 0]
+
+    image = get_image_data(image_path + filename)
+    label = df.iloc[index, 1]
+
+    return image, label
+
+
+def get_image_data(fullfilename):
+    img = Image.open(fullfilename)
+    arr = np.array(img)
+    return arr
+
+
+def load_data():
+    df = pd.read_csv(data_filename, header=None)
+
+    image_data = np.empty([0, 80, 128])
+    label_data = np.empty([0, 1])
+
+    for _, row in df.iterrows():
+        arr = get_image_data(image_path + row[0])
+        image_data = np.append(image_data, [arr], axis=0)
+        label_data = np.append(label_data, [[row[1]]], axis=0)
+
+    return image_data, label_data
+
+
+def load_test_data():
+    df = pd.read_csv(test_data_filename, header=None)
+
+    image_data = np.empty([0, 80, 128])
+    label_data = np.empty([0, 1])
+
+    for _, row in df.iterrows():
+        arr = get_image_data(image_path + row[0])
+        image_data = np.append(image_data, [arr], axis=0)
+        label_data = np.append(label_data, [[row[1]]], axis=0)
+
+    return image_data, label_data
+
+
+def main():
+    image_data, label_data = load_data()
+
+    print(image_data.shape)
+    print(label_data.shape)
+
+    test_image_data, test_label_data = load_test_data()
+
+    print(test_image_data.shape)
+    print(test_label_data.shape)
+
+
+if __name__ == "__main__":
+    main()

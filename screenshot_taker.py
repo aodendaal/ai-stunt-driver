@@ -8,12 +8,18 @@ import time
 resize_percentage = 0.2
 
 
-def save_screenshot(path):
+def get_screenshot():
     img = ImageGrab.grab()  # grab full screen
     img = img.convert("L")  # convert to greyscale
     img = img.resize((math.floor(img.width * resize_percentage),
                       math.floor(img.height * resize_percentage)),
                      Image.BILINEAR)
+
+    return img
+
+
+def save_screenshot(path):
+    img = get_screenshot()
 
     filename = "{0}.png".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"))
     pahtfilename = "{0}/{1}".format(path, filename)
@@ -24,11 +30,7 @@ def save_screenshot(path):
 
 
 def get_screenshot_data():
-    img = ImageGrab.grab()  # grab full screen
-    img = img.convert("L")  # convert to greyscale
-    img = img.resize((math.floor(img.width * resize_percentage),
-                      math.floor(img.height * resize_percentage)),
-                     Image.BILINEAR)
+    img = get_screenshot()
 
     pixels = img.getdata()
 
@@ -36,11 +38,7 @@ def get_screenshot_data():
 
 
 def get_screenshot_array():
-    img = ImageGrab.grab()  # grab full screen
-    img = img.convert("L")  # convert to greyscale
-    img = img.resize((math.floor(img.width * resize_percentage),
-                      math.floor(img.height * resize_percentage)),
-                     Image.BILINEAR)
+    img = get_screenshot()
 
     arr = np.array(img)
 

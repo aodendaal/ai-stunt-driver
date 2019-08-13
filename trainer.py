@@ -1,39 +1,49 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-import tensorflow as tf
-import cnn_model as m
 import training_data
-import numpy as np
+from tensorflow.keras import datasets, layers, models
 
-with tf.Session() as session:
-    x = tf.placeholder(tf.float32, shape=[None, training_data.width * training_data.height])
-    y = tf.placeholder(tf.float32, shape=[None, training_data.channels])
 
-    model = m.Model(training_data.width, training_data.height, training_data.channels, x, 0.9, y)
+def main():
+    print('loading training data...')
+    train_images, train_labels = training_data.load_data()
+    print('training data loaded')
 
-    init = tf.global_variables_initializer()
-    session.run(init)
+    train_size = training_data.get_record_count()
+    train_images = train_images.reshape((train_size, 80, 128, 1))
+    train_images = train_images / 255.0
 
-    data_total = training_data.get_file_size()
-    count = 0
+    model = models.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(80, 128, 1)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 
-    while True:
-        batch_size = np.minimum(data_total, 100)
-        data_total = data_total - batch_size
-        print('Processing batch {0} - {1} rows remaining'.format(count, data_total))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(9, activation='softmax'))
 
-        data, labels = training_data.get_batch(batch_size)
-        session.run(model.optimize, feed_dict={x: data, y: labels})
+    model.summary()
 
-        count = count + 1
+    model.compile(optimizer='adam',
+                  loss='sparse_categorical_crossentropy',
+                  metrics=['accuracy'])
 
-        if (data_total == 0):
-            break
+    model.fit(train_images, train_labels, epochs=5)
 
-    print('Testing accuracy')
-    test_data, test_labels = training_data.get_test_batch()
+    # Testing
+    test_images, test_labels = training_data.load_test_data()
 
-    result = session.run(model.error, feed_dict={x: test_data, y: test_labels})
-    print('Accuracy: {0}%'.format(int(result * 100)))
+    test_size = training_data.get_test_record_count()
+    test_images = test_images.reshape((test_size, 80, 128, 1))
+    test_images = test_images / 255.0
 
-    saver = tf.train.Saver()
-    save_path = saver.save(session, 'tmp/cnn.ckpt')
+    test_loss, test_acc = model.evaluate(test_images, test_labels)
+
+    model.save('./tmp/kerasmodel.h5')
+
+    print(test_loss, test_acc)
+
+
+if __name__ == "__main__":
+    main()
