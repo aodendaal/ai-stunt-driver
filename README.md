@@ -7,17 +7,17 @@ I chose Stunts as my game environment because I can create custom tracks. The sc
 
 The game is available via [abandonware](http://www.abandonia.com/en/games/73/Stunts.html) and runs in [DOSBox](https://www.dosbox.com/).
 ## Status
-I'm currently on getting 12%-15% accuracy so the car either does nothing (decides there's no input required) or only accelerates. This project is still a work-in-progress.
+I'm currently on getting ~50% accuracy so the car either does nothing (decides there's no input required) or accelerates, occasionally it decides to turn for a frame. This project is still a work-in-progress.
 
 I made a custom, banked track that's a simple left-hand then right-hand loop.
 ![Stunts Main Menu](img/screenshot01.png)
 
 ## Recording training data
-**NB** Recorder takes screenshots of the whole screen so you must play the game in fullscreen mode.
+**NB** Run the game in your primary screen because Pillow (image taking dependency) only applies coordinates in the primary space.
 ```Python
 python recorder.py
 ```
-Run the script then start the game, select a track and begin the race. Press F10 to start recording the screen and your inputs and F10 again to stop recording. Press F12 to stop the script running.
+Run the script then start the game, select a track and begin the race. Press F5 to start recording the screen and your inputs and F5 again to stop recording. Press F12 to stop the script running.
 
 In a future update I want to cache the recording session so that if you crash you can discard the data without saving it to file.
 
@@ -31,4 +31,4 @@ python trainer.py
 ```Python
 python runner.py
 ```
-Run the script then start the game, select a track and begin the race. Press F10 to allow the script to send keyboard commands and press F10 again to stop. Press F12 to stop the script running.
+Run the script then start the game, select a track and begin the race. Press F5 to allow the script to send keyboard commands and press F5 again to stop. Press F12 to stop the script running.

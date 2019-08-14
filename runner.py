@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import keyboard_listener as kb
 import numpy as np
-from pynput.keyboard import Key
 import screenshot_taker as st
 from tensorflow.keras import datasets, layers, models
 import time
@@ -33,13 +32,16 @@ def main():
     kb.setup_keyboard_listening()
 
     count = 0
+
     while kb.has_started:
         if (kb.is_listening):
             data = st.get_screenshot_array()
             prediction = get_prediction(data)
             key, key_desc = kb.get_keys_to_press(prediction)
-            print(count, key_desc)
+
+            print("step: {0} confidence: {1:0.1f}% direction: {2}".format(count, np.max(prediction) * 100, key_desc))
             count = count + 1
+
             kb.press_keys(key)
         else:
             kb.clear_pressed_keys()

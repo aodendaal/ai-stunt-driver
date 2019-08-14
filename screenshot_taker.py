@@ -4,15 +4,26 @@ import datetime
 import math
 import numpy as np
 import time
+import window_location
 
-resize_percentage = 0.2
+_resize_percentage = 0.2
+_form_name = "DOSBox 0.74"
 
 
 def get_screenshot():
-    img = ImageGrab.grab()  # grab full screen
+    global _resize_percentage
+    global _form_name
+
+    left, top, right, bottom = window_location.get_dimensions(_form_name)
+
+    if (left == 0 and right == 0):
+        img = ImageGrab.grab()  # grab full screen
+    else:
+        img = ImageGrab.grab(bbox=(left, top, right, bottom))  # grab specific window
+
     img = img.convert("L")  # convert to greyscale
-    img = img.resize((math.floor(img.width * resize_percentage),
-                      math.floor(img.height * resize_percentage)),
+    img = img.resize((math.floor(img.width * _resize_percentage),
+                      math.floor(img.height * _resize_percentage)),
                      Image.BILINEAR)
 
     return img

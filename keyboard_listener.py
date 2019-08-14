@@ -15,7 +15,7 @@ def on_press(key):
 
     current_keys.add(key)
 
-    if key == Key.f10:
+    if key == Key.f5:
         is_listening = not is_listening
         if is_listening:
             print('Listening...')
