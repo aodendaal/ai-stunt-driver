@@ -48,18 +48,15 @@ def get_image_data(fullfilename):
 def load_data():
     df = pd.read_csv(data_filename, header=None)
 
-    image_data = np.empty([0, 80, 128])
-    label_data = np.empty([0, 1])
-
-    count = 0
     total = get_record_count()
 
-    for _, row in df.iterrows():
-        print("Loading record {0} of {1}".format(count, total))
+    image_data = np.empty([total, 80, 128])
+    label_data = np.empty([total, 1])
+
+    for index, row in df.iterrows():
         arr = get_image_data(image_path + row[0])
-        image_data = np.append(image_data, [arr], axis=0)
-        label_data = np.append(label_data, [[row[1]]], axis=0)
-        count = count + 1
+        image_data[index] = arr
+        label_data[index] = row[1]
 
     return image_data, label_data
 
@@ -67,18 +64,15 @@ def load_data():
 def load_test_data():
     df = pd.read_csv(test_data_filename, header=None)
 
-    image_data = np.empty([0, 80, 128])
-    label_data = np.empty([0, 1])
+    total = get_test_record_count()
 
-    count = 0
-    total = get_record_count()
+    image_data = np.empty([total, 80, 128])
+    label_data = np.empty([total, 1])
 
-    for _, row in df.iterrows():
-        print("Loading record {0} of {1}".format(count, total))
+    for index, row in df.iterrows():
         arr = get_image_data(image_path + row[0])
-        image_data = np.append(image_data, [arr], axis=0)
-        label_data = np.append(label_data, [[row[1]]], axis=0)
-        count = count + 1
+        image_data[index] = arr
+        label_data[index] = row[1]
 
     return image_data, label_data
 
@@ -86,18 +80,15 @@ def load_test_data():
 def compile_data():
     df = pd.read_csv(data_filename, header=None)
 
-    image_data = np.empty([0, 80, 128])
-    label_data = np.empty([0, 1])
-
-    count = 0
     total = get_record_count()
 
-    for _, row in df.iterrows():
-        print("Loading record {0} of {1}".format(count, total))
+    image_data = np.empty([total, 80, 128])
+    label_data = np.empty([total, 1])
+
+    for index, row in df.iterrows():
         arr = get_image_data(image_path + row[0])
-        image_data = np.append(image_data, [arr], axis=0)
-        label_data = np.append(label_data, [[row[1]]], axis=0)
-        count = count + 1
+        image_data[index] = arr
+        label_data[index] = row[1]
 
     print("Saving image data")
     np.save('./data/image_data.npy', image_data)
@@ -116,6 +107,8 @@ def main():
 
     print(test_image_data.shape)
     print(test_label_data.shape)
+
+    # compile_data()
 
 
 if __name__ == "__main__":
