@@ -33,7 +33,7 @@ def get_screenshot():
     if channels == 1:
         img = img.convert("L")  # convert to greyscale
 
-    img = img.resize((get_width(), get_height), Image.BILINEAR)
+    img = img.resize((get_width(), get_height()), Image.BILINEAR)
 
     return img
 
