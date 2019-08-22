@@ -8,12 +8,11 @@ def main():
     print('loading training data...')
     train_images, train_labels = training_data.load_data()
 
-    train_size = training_data.get_record_count()
     train_images = train_images / 255.0
 
     print('generating model...')
     model = models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(train_size, st.get_height(), st.get_width(), st.channels)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(st.get_height(), st.get_width(), st.channels)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))

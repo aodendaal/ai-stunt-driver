@@ -51,7 +51,7 @@ def load(filename):
 
     total = get_record_count()
 
-    image_data = np.empty([total, st.get_width(), st.get_height(), st.channels])
+    image_data = np.empty([total, st.get_height(), st.get_width(), st.channels])
     label_data = np.empty([total, 1])
 
     for index, row in df.iterrows():
