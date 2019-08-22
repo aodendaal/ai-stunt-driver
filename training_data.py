@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import pandas as pd
+import screenshot_taker as st
 
 data_filename = 'data/recording.csv'
 test_data_filename = 'data/test.csv'
@@ -45,12 +46,15 @@ def get_image_data(fullfilename):
     return arr
 
 
-def load_data():
-    df = pd.read_csv(data_filename, header=None)
+def load(filename, resize_percentage, channels):
+    st.resize_percentage = resize_percentage
+    st.channels = channels
+
+    df = pd.read_csv(filename, header=None)
 
     total = get_record_count()
 
-    image_data = np.empty([total, 80, 128])
+    image_data = np.empty([total, st.get_width(), st.get_height(), st.channels])
     label_data = np.empty([total, 1])
 
     for index, row in df.iterrows():
@@ -61,20 +65,12 @@ def load_data():
     return image_data, label_data
 
 
-def load_test_data():
-    df = pd.read_csv(test_data_filename, header=None)
+def load_data(resize_percentage, channels):
+    return load(data_filename)
 
-    total = get_test_record_count()
 
-    image_data = np.empty([total, 80, 128])
-    label_data = np.empty([total, 1])
-
-    for index, row in df.iterrows():
-        arr = get_image_data(image_path + row[0])
-        image_data[index] = arr
-        label_data[index] = row[1]
-
-    return image_data, label_data
+def load_test_data(resize_percentage, channels):
+    return load(test_data_filename)
 
 
 def compile_data():

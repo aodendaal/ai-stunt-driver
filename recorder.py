@@ -2,11 +2,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import csv
 import time
 import keyboard_listener as listener
-import screenshot_taker as screenshot
+import screenshot_taker as st
 
 image_path = "./screenshots"
 output_filename = './data/recording.csv'
-frames_per_second = 10
+frames_per_second = 15
+st.resize_percentage = 0.5
+st.channels = 3
 
 
 def direction_to_onehot(input):
@@ -35,7 +37,7 @@ def start_recorder():
         writer = csv.writer(recording_file)
         while listener.has_started:
             while listener.is_listening:
-                filename = screenshot.save_screenshot(image_path)
+                filename = st.save_screenshot(image_path)
                 writer.writerow([filename, direction_to_onehot(listener.get_current_keys())])
 
                 time.sleep(1 / frames_per_second)

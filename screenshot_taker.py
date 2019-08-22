@@ -6,12 +6,21 @@ import numpy as np
 import time
 import window_location
 
-_resize_percentage = 0.2
 _form_name = "DOSBox 0.74"
+
+resize_percentage = 0.5
+channels = 3
+
+
+def get_width():
+    return math.floor(640 * resize_percentage)
+
+
+def get_height():
+    return math.floor(400 * resize_percentage)
 
 
 def get_screenshot():
-    global _resize_percentage
     global _form_name
 
     left, top, right, bottom = window_location.get_dimensions(_form_name)
@@ -21,10 +30,10 @@ def get_screenshot():
     else:
         img = ImageGrab.grab(bbox=(left, top, right, bottom))  # grab specific window
 
-    img = img.convert("L")  # convert to greyscale
-    img = img.resize((math.floor(img.width * _resize_percentage),
-                      math.floor(img.height * _resize_percentage)),
-                     Image.BILINEAR)
+    if channels == 1:
+        img = img.convert("L")  # convert to greyscale
+
+    img = img.resize((get_width(), get_height), Image.BILINEAR)
 
     return img
 

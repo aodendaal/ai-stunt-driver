@@ -7,7 +7,9 @@ import time
 
 
 model = None
-frames_per_second = 5
+frames_per_second = 15
+st.resize_percentage = 0.5
+st.channels = 3
 
 
 def get_model():
@@ -20,7 +22,7 @@ def get_prediction(data):
     if model == None:
         get_model()
 
-    data = data.reshape(1, 80, 128, 1)
+    data = data.reshape(1, st.get_height(), st.get_width(), st.channels)
     prediction = model.predict(data)
 
     return prediction
