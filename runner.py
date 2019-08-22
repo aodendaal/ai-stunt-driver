@@ -8,8 +8,6 @@ import time
 
 model = None
 frames_per_second = 15
-st.resize_percentage = 0.5
-st.channels = 3
 
 
 def get_model():

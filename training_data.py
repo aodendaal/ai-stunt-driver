@@ -46,10 +46,7 @@ def get_image_data(fullfilename):
     return arr
 
 
-def load(filename, resize_percentage, channels):
-    st.resize_percentage = resize_percentage
-    st.channels = channels
-
+def load(filename):
     df = pd.read_csv(filename, header=None)
 
     total = get_record_count()
@@ -65,11 +62,11 @@ def load(filename, resize_percentage, channels):
     return image_data, label_data
 
 
-def load_data(resize_percentage, channels):
+def load_data():
     return load(data_filename)
 
 
-def load_test_data(resize_percentage, channels):
+def load_test_data():
     return load(test_data_filename)
 
 

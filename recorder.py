@@ -7,8 +7,6 @@ import screenshot_taker as st
 image_path = "./screenshots"
 output_filename = './data/recording.csv'
 frames_per_second = 15
-st.resize_percentage = 0.5
-st.channels = 3
 
 
 def direction_to_onehot(input):

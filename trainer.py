@@ -5,12 +5,8 @@ import screenshot_taker as st
 
 
 def main():
-
-    st.resize_percentage = 0.5
-    st.channels = 3
-
     print('loading training data...')
-    train_images, train_labels = training_data.load_data(st.resize_percentage, st.channels)
+    train_images, train_labels = training_data.load_data()
 
     train_size = training_data.get_record_count()
     train_images = train_images / 255.0
@@ -37,7 +33,7 @@ def main():
     model.fit(train_images, train_labels, epochs=5)
 
     print('loading test data...')
-    test_images, test_labels = training_data.load_test_data(st.resize_percentage, st.channels)
+    test_images, test_labels = training_data.load_test_data()
     test_images = test_images / 255.0
 
     print('evaluationg trained model...')
