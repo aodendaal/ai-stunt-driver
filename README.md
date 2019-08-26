@@ -7,7 +7,7 @@ I chose Stunts as my game environment because I can create custom tracks. The sc
 
 The game is available via [abandonware](http://www.abandonia.com/en/games/73/Stunts.html) and runs in [DOSBox](https://www.dosbox.com/).
 ## Status
-I'm currently on getting ~50% accuracy so the car either does nothing (decides there's no input required) or accelerates, occasionally it decides to turn for a frame. This project is still a work-in-progress.
+My model is sitting at ~64% accuracy and it's capable of completing the custom track I've been training on.
 
 I made a custom, banked track that's a simple left-hand then right-hand loop.
 ![Stunts Main Menu](img/screenshot01.png)
