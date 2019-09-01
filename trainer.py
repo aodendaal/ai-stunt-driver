@@ -1,10 +1,14 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
+import screenshot_taker as st
+from stopwatch import Stopwatch
 import training_data
 from tensorflow.keras import datasets, layers, models
-import screenshot_taker as st
 
 
 def main():
+    stopwatch = Stopwatch()
+    stopwatch.start()
+
     print('loading training data...')
     train_images, train_labels = training_data.load_data()
 
@@ -42,6 +46,9 @@ def main():
     model.save('./tmp/kerasmodel.h5')
 
     print('Loss Value: {0}, Accuracy: {1}'.format(test_loss, test_acc))
+
+    stopwatch.stop()
+    print('Total duration: {0}'.format(stopwatch))
 
 
 if __name__ == "__main__":
